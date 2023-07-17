@@ -1,0 +1,97 @@
+.table-container {
+
+    margin-bottom: 20px;
+  
+  }
+  
+  
+  
+  
+  .table-container h3 {
+  
+    font-size: 18px;
+  
+    margin-bottom: 10px;
+  
+  }
+  
+  
+  
+  
+  .table-container th {
+  
+    font-weight: bold;
+  
+    background-color: #056178; /* Change table header background color to blue */
+  
+    color: white;
+  
+  }
+  
+  
+  
+  
+  .table-blue thead th {
+  
+    background-color: #056178;
+  
+    color: white;
+  
+  }
+  
+  
+  
+  
+  .custom-table tbody tr.table-row-odd {
+  
+    background-color: lightblue;
+  
+  }
+  
+  
+  
+  
+  .custom-table tbody tr.table-row-even {
+  
+    background-color: lightgray;
+  
+  }
+  
+  
+  
+  
+  .table-container td, .table-container th {
+  
+    padding: 8px;
+  
+    background-color: #bde0fe;
+  
+    text-align: left;
+  
+  }
+  
+  
+  
+  
+  .table-container tfoot tr td:first-child {
+  
+    font-weight: bold;
+  
+  }
+  
+  
+  .spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+  }
+  
+  
+  .total-issues {
+  
+    margin-top: 20px;
+  
+    font-weight: bold;
+  
+  }
