@@ -5,6 +5,7 @@ import Table from 'react-bootstrap/Table';
 import { css } from "@emotion/react";
 import ClipLoader from "react-spinners/ClipLoader";
 import './CustomTable.css';
+import _ from 'lodash';
 
 const Regression = () => {
   const [data, setData] = useState(null);
@@ -14,7 +15,7 @@ const Regression = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/getProjectsRegressionData");
+        const response = await axios.get("http://localhost:8000/regression");
         const result = response.data;
         setData(result);
         setIsLoading(false);
@@ -125,14 +126,23 @@ const Regression = () => {
   const doneData = filteredData.filter((issue) => issue.fields.status.name === "Done");
   const closedData = filteredData.filter((issue) => issue.fields.status.name === "Closed");
   const otherData = filteredData.filter((issue) => issue.fields.status.name !== "Done" && issue.fields.status.name !== "Closed");
+  
+  const ages_otherData = otherData.map((issue) => calculateAge(issue.fields.created));
+  const meanAge_otherData = ages_otherData.length > 0 ? Math.round(ages_otherData.reduce((a, b) => a + b) / ages_otherData.length) : 0;
 
+  const ages_doneData = doneData.map((issue) => calculateAge(issue.fields.created));
+  const meanAge_doneData = ages_doneData.length > 0 ? Math.round(ages_doneData.reduce((a, b) => a + b) / ages_doneData.length) : 0;
+
+  const ages_closedData = closedData.map((issue) => calculateAge(issue.fields.created));
+  const meanAge_closedData = ages_closedData.length > 0 ? Math.round(ages_closedData.reduce((a, b) => a + b) / ages_closedData.length) : 0;
   return (
     <div className="container d-flex align-items-center justify-content-center">
       <div>
-        <h1 style={{ textAlign: 'center' }}>Regression</h1>
+        <h1 style={{ textAlign: 'center' }}>Customer Regression</h1>
         {otherData.length > 0 && (
           <div>
-            <h2>Open Issues</h2>
+            <h2>RCAs Open :{otherData.length}</h2>
+            <h3 style={{ textAlign: 'left' }}>Mean Backlog Age (Actual): {meanAge_otherData}</h3>
             <Table striped bordered hover size="sm" className="table-blue">
               <thead style={{ fontSize: 16 }}>
                 <tr style={{ textAlign: 'center' }}>
@@ -143,12 +153,12 @@ const Regression = () => {
                   <th>Created Date</th>
                   <th>Days Open</th>
                   <th>Working Days</th>
-                  <th>Fix Versions</th>
+
                   <th>Labels</th>
                 </tr>
               </thead>
               <tbody style={{ fontSize: 14 }}>
-                {otherData.map((issue, index) => (
+                {_.sortBy(otherData, (issue) => -calculateActualAge(issue.fields.created)).map((issue, index) => (
                   <tr key={issue.key}>
                     <td style={{ textAlign: 'center' }}>{index + 1}</td>
                     <td style={{ width: 100, textAlign: "center" }}>
@@ -161,7 +171,7 @@ const Regression = () => {
                     <td style={{ width: 110, textAlign: 'center' }}>{formatDate(issue.fields.created)}</td>
                     <td style={{ textAlign: 'center' }}>{calculateActualAge(issue.fields.created)}</td>
                     <td style={{ textAlign: 'center' }}>{calculateAge(issue.fields.created)}</td>
-                    <td style={{ textAlign: 'center' }}>{fixed(issue.fields.fixVersions)}</td>
+
                     <td>{issue.fields.labels.join('   ')}</td>
                   </tr>
                 ))}
@@ -171,7 +181,8 @@ const Regression = () => {
         )}
         {doneData.length > 0 && (
           <div>
-            <h2>Done Issues</h2>
+            <h2>Preventive Actions Open : {doneData.length}</h2>
+            <h3 style={{ textAlign: 'left' }}>Mean Backlog Age (Actual): {meanAge_doneData}</h3>
             <Table striped bordered hover size="sm" className="table-blue">
               <thead style={{ fontSize: 16 }}>
                 <tr style={{ textAlign: 'center' }}>
@@ -182,12 +193,12 @@ const Regression = () => {
                   <th>Created Date</th>
                   <th>Days Open</th>
                   <th>Working Days</th>
-                  <th>Fix Versions</th>
+
                   <th>Labels</th>
                 </tr>
               </thead>
               <tbody style={{ fontSize: 14 }}>
-                {doneData.map((issue, index) => (
+                {_.sortBy(doneData, (issue) => -calculateActualAge(issue.fields.created)).map((issue, index) => (
                   <tr key={issue.key}>
                     <td style={{ textAlign: 'center' }}>{index + 1}</td>
                     <td style={{ width: 100, textAlign: "center" }}>
@@ -200,7 +211,7 @@ const Regression = () => {
                     <td style={{ width: 110, textAlign: 'center' }}>{formatDate(issue.fields.created)}</td>
                     <td style={{ textAlign: 'center' }}>{calculateActualAge(issue.fields.created)}</td>
                     <td style={{ textAlign: 'center' }}>{calculateAge(issue.fields.created)}</td>
-                    <td style={{ textAlign: 'center' }}>{fixed(issue.fields.fixVersions)}</td>
+
                     <td>{issue.fields.labels.join('   ')}</td>
                   </tr>
                 ))}
@@ -210,7 +221,7 @@ const Regression = () => {
         )}
         {closedData.length > 0 && (
           <div>
-            <h2>Closed Issues</h2>
+            <h2>Closed Issues : {closedData.length}</h2>
             <Table striped bordered hover size="sm" className="table-blue">
               <thead style={{ fontSize: 16 }}>
                 <tr style={{ textAlign: 'center' }}>
@@ -221,12 +232,16 @@ const Regression = () => {
                   <th>Created Date</th>
                   <th>Days Open</th>
                   <th>Working Days</th>
-                  <th>Fix Versions</th>
+
                   <th>Labels</th>
                 </tr>
               </thead>
-              <tbody style={{ fontSize: 14 }}>
-                {closedData.map((issue, index) => (
+              <tbody style={{
+
+
+                fontSize: 14
+              }}>
+                {_.sortBy(closedData, (issue) => calculateActualAge(issue.fields.created)).map((issue, index) => (
                   <tr key={issue.key}>
                     <td style={{ textAlign: 'center' }}>{index + 1}</td>
                     <td style={{ width: 100, textAlign: "center" }}>
@@ -239,7 +254,7 @@ const Regression = () => {
                     <td style={{ width: 110, textAlign: 'center' }}>{formatDate(issue.fields.created)}</td>
                     <td style={{ textAlign: 'center' }}>{calculateActualAge(issue.fields.created)}</td>
                     <td style={{ textAlign: 'center' }}>{calculateAge(issue.fields.created)}</td>
-                    <td style={{ textAlign: 'center' }}>{fixed(issue.fields.fixVersions)}</td>
+
                     <td>{issue.fields.labels.join('   ')}</td>
                   </tr>
                 ))}

@@ -19,7 +19,7 @@ const Defect = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/getProjectsDefectData"
+          "http://localhost:8000/defect"
         );
         const result = response.data;
         setData(result);

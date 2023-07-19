@@ -17,7 +17,7 @@ const Security = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/getProjectsSecurityData');
+        const response = await axios.get('http://localhost:8000/security');
         const result = response.data;
         setData(result);
         setIsLoading(false);
