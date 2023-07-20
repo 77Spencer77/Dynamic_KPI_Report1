@@ -133,8 +133,7 @@ const Regression = () => {
   const ages_doneData = doneData.map((issue) => calculateAge(issue.fields.created));
   const meanAge_doneData = ages_doneData.length > 0 ? Math.round(ages_doneData.reduce((a, b) => a + b) / ages_doneData.length) : 0;
 
-  const ages_closedData = closedData.map((issue) => calculateAge(issue.fields.created));
-  const meanAge_closedData = ages_closedData.length > 0 ? Math.round(ages_closedData.reduce((a, b) => a + b) / ages_closedData.length) : 0;
+
   return (
     <div className="container d-flex align-items-center justify-content-center">
       <div>
@@ -166,7 +165,7 @@ const Regression = () => {
                         {issue.key}
                       </a>
                     </td>
-                    <td style={{ textAlign: 'center' }}>{(issue.fields.customfield_16500 != null) ? issue.fields.customfield_16500.value : issue.fields.priority.name}</td>
+                    <td style={{ textAlign: 'center' }}>{(issue.fields.customfield_16500!=null?issue.fields.customfield_16500.value:(issue.fields.priority!=null?issue.fields.priority.name:""))}</td>
                     <td style={{ textAlign: 'left' }} >{issue.fields.summary}</td>
                     <td style={{ width: 110, textAlign: 'center' }}>{formatDate(issue.fields.created)}</td>
                     <td style={{ textAlign: 'center' }}>{calculateActualAge(issue.fields.created)}</td>
