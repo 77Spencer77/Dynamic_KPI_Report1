@@ -5,7 +5,7 @@ The application displays the live data for Customer issues, Internal Defects and
 ## Table of Contents
 
 - [Project Description](#project-description)
-- [Installation](#installation)
+- [Run Locally](#installation)
 - [Usage](#usage)
 - [Features](#features)
 - [Technologies Used](#technologies-used)
@@ -16,10 +16,6 @@ The application displays the live data for Customer issues, Internal Defects and
 ## Project Description
 
 The backend of the application fetches the live data for each of the issue types. The application uses jira apis to do so. Henceforth, the frontend takes the data from the backend api and displays it on the client side.
-
-## Installation
-
-To setup the project locally follow these steps on terminal :
 
 ## Run Locally
 
